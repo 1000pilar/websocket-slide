@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+    <script src="https://www.gstatic.com/firebasejs/4.1.1/firebase.js"></script>
+  </head>
+  <body>
+    <div class="container">
+      <div class="w3-content w3-display-container">
+        <div style="margin-left: 45%">
+          <button class="w3-button w3-black w3-display-left" onclick="plusDivs(-1)" >&#10094;</button>
+          <button class="w3-button w3-black w3-display-right" onclick="plusDivs(1)" >&#10095;</button>
+        </div>
+        <img class="mySlides" src="./assets/img/IMG_1.jpg" align="middle" style="margin-left: 25%">
+        <img class="mySlides" src="./assets/img/IMG_2.jpg" align="middle" style="margin-left: 25%">
+        <img class="mySlides" src="./assets/img/IMG_3.jpg" align="middle" style="margin-left: 25%">
+        <img class="mySlides" src="./assets/img/IMG_4.jpg" align="middle" style="margin-left: 25%">
+      </div>
+    </div>
+
+    <script>
+      // Initialize Firebase
+      var config = {
+        apiKey: "AIzaSyBr2XuOByDxYE2mBmnlb7LyPwhWDQ24Tlw",
+        authDomain: "web-socket-f7e63.firebaseapp.com",
+        databaseURL: "https://web-socket-f7e63.firebaseio.com",
+        projectId: "web-socket-f7e63",
+        storageBucket: "web-socket-f7e63.appspot.com",
+        messagingSenderId: "1094360862399"
+      };
+      firebase.initializeApp(config);
+      //
+      var database = firebase.database();
+
+
+      var slideIndex = 1;
+      showDivs(slideIndex);
+
+      function plusDivs(n) {
+        showDivs(slideIndex += n);
+        writeUserData('D001', slideIndex)
+      }
+
+       function writeUserData(slideId, index) {
+         database.ref('slide/' + slideId).set({
+           index: index
+         });
+       }
+
+      function showDivs(n) {
+        var i;
+        var x = document.getElementsByClassName("mySlides");
+
+        if (n > x.length) {slideIndex = 1}
+        if (n < 1) {slideIndex = x.length}
+
+        for (i = 0; i < x.length; i++) {
+           x[i].style.display = "none";
+        }
+        var slideId = 'D001'
+
+        var slide = database.ref('slide/' + slideId);
+        slide.on('value', function(img) {
+          console.log(img.val().index);
+          x[img.val().index-1].style.display = "block";
+        });
+      }
+    </script>
+  </body>
+</html>
